@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tren Zamanı</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f0f4f8, #e9eef3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 350px;
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .prev {
+      background: #ffe5e5;
+      color: #c0392b;
+    }
+
+    .current {
+      background: #e5ffe9;
+      color: #27ae60;
+    }
+
+    .next {
+      background: #f1f2f6;
+      color: #2c3e50;
+    }
+
+    .big-card {
+      width: 100%;
+      max-width: 350px;
+      background: #2d3436;
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 700;
+      padding: 25px;
+      margin-top: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .time {
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (min-width: 768px) {
+      .cards-container {
+        display: flex;
+        gap: 20px;
+      }
+      .card {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🚆 Tren Saatleri</h1>
+
+  <div class="cards-container">
+    <div class="card prev">
+      Önceki <br>
+      <span class="time" id="prev-time">--:--</span>
+    </div>
+    <div class="card current">
+      Şimdi <br>
+      <span class="time" id="current-time">--:--</span>
+    </div>
+    <div class="card next">
+      Sonraki <br>
+      <span class="time" id="next-time">--:--</span>
+    </div>
+  </div>
+
+  <div class="big-card">
+    ⏳ Kalan Süre <br>
+    <span id="countdown">--:--</span>
+  </div>
+
+  <script>
+    const schedule = [
+      "06:07","06:22","06:37","06:52","07:07","07:22","07:37","07:52",
+      "08:07","08:17","08:22","08:27","08:37","08:52","09:07","09:22",
+      "09:37","09:52","10:07","10:22","10:37","10:52","11:07","11:22",
+      "11:37","11:52","12:07","12:22","12:37","12:52","13:07","13:22",
+      "13:37","13:52","14:07","14:22","14:37","14:52","15:07","15:22",
+      "15:37","15:52","16:07","16:22","16:37","16:52","17:07","17:22",
+      "17:37","17:52","18:07","18:22","18:37","18:52","19:07","19:22",
+      "19:37","19:52","20:07","20:22","20:37","20:52","21:07","21:37",
+      "22:07","22:37","23:07"
+    ];
+
+    function updateTimes() {
+      const now = new Date();
+      const currentTime = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+      document.getElementById("current-time").textContent = currentTime;
+
+      let prev = "--:--", next = "--:--";
+      for (let i = 0; i < schedule.length; i++) {
+        if (schedule[i] > currentTime) {
+          next = schedule[i];
+          prev = schedule[i-1] || "--:--";
+          break;
+        }
+      }
+      document.getElementById("prev-time").textContent = prev;
+      document.getElementById("next-time").textContent = next;
+
+      if (next !== "--:--") {
+        const [h, m] = next.split(":").map(Number);
+        const nextDate = new Date();
+        nextDate.setHours(h, m, 0, 0);
+        const diff = nextDate - now;
+        const mins = Math.floor(diff / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+        document.getElementById("countdown").textContent =
+          `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+      }
+    }
+    setInterval(updateTimes, 1000);
+    updateTimes();
+  </script>
+</body>
+</html>
